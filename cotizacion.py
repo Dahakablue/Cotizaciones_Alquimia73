@@ -5,9 +5,10 @@ import datetime
 
 # Precios de renta y servicios
 PRECIOS_RENTA = {
-    "Planta Baja": 14000,
-    "Planta Alta (Semana)": 7000,
-    "Planta Alta (Fin de Semana)": 12000
+    "Entre semana Planta Baja": 14000,
+    "Fin de semana Planta Baja": 15000,
+    "Entre semana Planta Alta": 7000,
+    "Fin de semana Planta Alta": 12000
 }
 COSTO_HORA_EXTRA = 2000
 PRECIOS_COMIDA = {
@@ -68,18 +69,50 @@ fecha_reservada = pd.to_datetime("2025-01-25")  # Simulando una fecha reservada
 if fecha_evento == fecha_reservada:
     st.warning("Esta fecha ya está reservada. Elige otra.")
 else:
-    planta = st.selectbox("Selecciona la ubicación", list(PRECIOS_RENTA.keys()))
+    planta = st.selectbox(
+        "Selecciona la ubicación",
+        [
+            "Entre semana Planta Baja - $14,000",
+            "Fin de semana Planta Baja - $15,000",
+            "Entre semana Planta Alta - $7,000",
+            "Fin de semana Planta Alta - $12,000"
+        ]
+    )
     horas_extra = st.number_input("Horas adicionales", min_value=0, step=1)
     n_personas = st.number_input("Número de personas", min_value=1, step=1)
-    paquete_comida = st.selectbox("Selecciona el paquete de alimentos", list(PRECIOS_COMIDA.keys()))
+    paquete_comida = st.selectbox(
+        "Selecciona el paquete de alimentos",
+        [
+            "Básico - $250",
+            "Tradicional - $300",
+            "Premium - $350",
+            "Gourmet - $400"
+        ]
+    )
 
     # Servicios adicionales
-    servicios_seleccionados = st.multiselect("Servicios adicionales", list(PRECIOS_SERVICIOS.keys()))
+    servicios_seleccionados = st.multiselect(
+        "Servicios adicionales",
+        [
+            "DJ - $2,500",
+            "Grupo Musical - $3,500",
+            "Mesero - $500"
+        ]
+    )
 
     # Cálculo de costos
-    costo_renta = PRECIOS_RENTA[planta] + (horas_extra * COSTO_HORA_EXTRA)
-    costo_comida = PRECIOS_COMIDA[paquete_comida] * n_personas
-    costo_servicios = sum(PRECIOS_SERVICIOS[servicio] for servicio in servicios_seleccionados)
+    if planta == "Entre semana Planta Baja - $14,000":
+        costo_renta = 14000
+    elif planta == "Fin de semana Planta Baja - $15,000":
+        costo_renta = 15000
+    elif planta == "Entre semana Planta Alta - $7,000":
+        costo_renta = 7000
+    elif planta == "Fin de semana Planta Alta - $12,000":
+        costo_renta = 12000
+
+    costo_renta += (horas_extra * COSTO_HORA_EXTRA)
+    costo_comida = PRECIOS_COMIDA[paquete_comida.split(" - ")[0]] * n_personas
+    costo_servicios = sum(PRECIOS_SERVICIOS[servicio.split(" - ")[0]] for servicio in servicios_seleccionados)
     costo_total = costo_renta + costo_comida + costo_servicios
 
     st.write(f"### Costo Total: ${costo_total}")
@@ -122,5 +155,6 @@ else:
     mensaje_contacto = st.text_area("Mensaje (opcional)")
     if st.button("Enviar Información de Contacto"):
         st.success("¡Tu información ha sido enviada exitosamente!")
+
 
 
