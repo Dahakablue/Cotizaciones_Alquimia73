@@ -17,6 +17,12 @@ PRECIOS_COMIDA = {
     "Premium": 350,
     "Gourmet": 400
 }
+DESCRIPCIONES_COMIDA = {
+    "Básico": "Menú económico con platillos sencillos, ideal para eventos casuales.",
+    "Tradicional": "Menú con platillos mexicanos típicos, ideal para todos los gustos.",
+    "Premium": "Menú de calidad superior con opciones gourmet y sabores sofisticados.",
+    "Gourmet": "Menú exclusivo con platillos de alta cocina, ideal para eventos de lujo."
+}
 PRECIOS_SERVICIOS = {
     "DJ": 2500,
     "Grupo Musical": 3500,
@@ -55,6 +61,9 @@ st.markdown(
             background-color: #f0f0f0;
             border-radius: 5px;
         }
+        .stMarkdown {
+            color: white;
+        }
     </style>
     """,
     unsafe_allow_html=True,
@@ -80,6 +89,8 @@ else:
     )
     horas_extra = st.number_input("Horas adicionales", min_value=0, step=1)
     n_personas = st.number_input("Número de personas", min_value=1, step=1)
+    
+    # Paquete de comida con descripciones
     paquete_comida = st.selectbox(
         "Selecciona el paquete de alimentos",
         [
@@ -89,6 +100,7 @@ else:
             "Gourmet - $400"
         ]
     )
+    st.markdown(f"**Descripción del paquete de comida:** {DESCRIPCIONES_COMIDA[paquete_comida.split(' - ')[0]]}")
 
     # Servicios adicionales
     servicios_seleccionados = st.multiselect(
