@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 from fpdf import FPDF
-import pywhatkit as kit
 import datetime
 
 # Precios de renta y servicios
@@ -63,12 +62,14 @@ def generar_pdf():
 if st.button("Generar Cotización PDF"):
     generar_pdf()
 
-# Enviar por WhatsApp
-def enviar_whatsapp():
-    mensaje = f"Cotización Plaza Alquimia 73\nFecha: {fecha_evento}\nUbicación: {planta}\nPersonas: {n_personas}\nComida: {paquete_comida} - ${costo_comida}\nRenta: ${costo_renta}\nServicios: {', '.join(servicios_seleccionados)} - ${costo_servicios}\nTotal: ${costo_total}"
-    numero = st.text_input("Número de WhatsApp (con código de país, sin '+')")
-    if st.button("Enviar Cotización por WhatsApp"):
-        kit.sendwhatmsg_instantly(f"+{numero}", mensaje)
-        st.success("Cotización enviada")
+# Generar link de WhatsApp
+def generar_link_whatsapp():
+    mensaje = f"Cotización Plaza Alquimia 73%0AFecha: {fecha_evento}%0AUbicación: {planta}%0APersonas: {n_personas}%0AComida: {paquete_comida} - ${costo_comida}%0ARenta: ${costo_renta}%0AServicios: {', '.join(servicios_seleccionados)} - ${costo_servicios}%0ATotal: ${costo_total}"
+    numero = st.text_input("Número de WhatsApp (con código de país, sin '+')", "52")  # 52 es el código de México
+    link = f"https://wa.me/{numero}?text={mensaje}"
+    
+    if st.button("Generar Link de WhatsApp"):
+        st.markdown(f"[Enviar Cotización por WhatsApp]({link})", unsafe_allow_html=True)
 
-enviar_whatsapp()
+generar_link_whatsapp()
+
