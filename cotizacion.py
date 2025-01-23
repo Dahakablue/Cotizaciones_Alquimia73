@@ -19,10 +19,10 @@ PRECIOS_COMIDA = {
     "Gourmet": 400
 }
 DESCRIPCIONES_COMIDA = {
-    "Básico": "Menú económico con platillos sencillos, ideal para eventos casuales.",
-    "Tradicional": "Menú con platillos mexicanos típicos, ideal para todos los gustos.",
-    "Premium": "Menú de calidad superior con opciones gourmet y sabores sofisticados.",
-    "Gourmet": "Menú exclusivo con platillos de alta cocina, ideal para eventos de lujo."
+    "Básico": """Menú económico con opciones sencillas, como ensaladas, sándwiches y tacos. Ideal para eventos casuales y presupuestos ajustados.""",
+    "Tradicional": """Menú con platillos mexicanos típicos, como pozole, tacos, enchiladas y carnitas. Perfecto para todos los gustos.""",
+    "Premium": """Menú superior con opciones gourmet como filete de res, salmón, ensaladas sofisticadas, y postres finos. Ideal para eventos elegantes.""",
+    "Gourmet": """Menú exclusivo de alta cocina, con opciones como foie gras, caviar, mariscos frescos y platos internacionales. Para eventos de lujo."""
 }
 PRECIOS_SERVICIOS = {
     "DJ": 2500,
@@ -101,7 +101,7 @@ with st.expander("Selecciona tus opciones para el evento", expanded=True):
         horas_extra = st.number_input("Horas adicionales", min_value=0, step=1)
         n_personas = st.number_input("Número de personas", min_value=1, step=1)
 
-        # Paquete de comida con descripciones
+        # Paquete de comida con descripciones detalladas
         paquete_comida = st.selectbox(
             "Selecciona el paquete de alimentos",
             [
@@ -112,6 +112,18 @@ with st.expander("Selecciona tus opciones para el evento", expanded=True):
             ]
         )
         st.markdown(f"**Descripción del paquete de comida:** {DESCRIPCIONES_COMIDA[paquete_comida.split(' - ')[0]]}")
+
+        # Selección de horario (solo de 9 AM a 3 AM)
+        st.subheader("Selecciona el horario del evento")
+        hora_inicio = st.selectbox("Hora de inicio del evento", 
+            [f"{i:02d}:00" for i in range(9, 15)] + [f"{i:02d}:00" for i in range(0, 4)])
+        
+        # Mostrar la hora final basada en el número de horas
+        hora_fin = (datetime.datetime.strptime(hora_inicio, "%H:%M") + datetime.timedelta(hours=6)).strftime("%H:%M")
+        if horas_extra > 0:
+            hora_fin = (datetime.datetime.strptime(hora_fin, "%H:%M") + datetime.timedelta(hours=horas_extra)).strftime("%H:%M")
+        
+        st.write(f"Hora de fin estimada: {hora_fin}")
 
         # Servicios adicionales
         servicios_seleccionados = st.multiselect(
