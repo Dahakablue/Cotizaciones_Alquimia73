@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from fpdf import FPDF
 import datetime
+from PIL import Image
 
 # Precios de renta y servicios
 PRECIOS_RENTA = {
@@ -31,43 +32,10 @@ PRECIOS_SERVICIOS = {
 
 # Estilo visual
 st.set_page_config(page_title="Cotizador de Eventos - Plaza Alquimia 73", layout="wide")
-st.markdown(
-    """
-    <style>
-        body {
-            background-image: url('alquimia1.png');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            color: white;
-        }
-        .css-1p3h7l5 {
-            color: #FFFFFF;
-        }
-        .stButton>button {
-            background-color: #008CBA;
-            color: white;
-            font-weight: bold;
-        }
-        .stTextInput>div>input {
-            background-color: #f0f0f0;
-            border-radius: 5px;
-        }
-        .stSelectbox>div>div>input {
-            background-color: #f0f0f0;
-            border-radius: 5px;
-        }
-        .stMultiselect>div>div>input {
-            background-color: #f0f0f0;
-            border-radius: 5px;
-        }
-        .stMarkdown {
-            color: white;
-        }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+
+# Cargar imagen de fondo
+img = Image.open('alquimia1.png')
+st.image(img, use_column_width=True)
 
 # Título
 st.title("Cotizador de Eventos - Plaza Alquimia 73")
