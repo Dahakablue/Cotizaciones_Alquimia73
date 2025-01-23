@@ -83,7 +83,7 @@ st.markdown("""
 st.markdown('<h1 class="title">Cotizador de Eventos - Plaza Alquimia 73</h1>', unsafe_allow_html=True)
 
 # Selección de datos con tarjetas estilizadas
-with st.beta_expander("Selecciona tus opciones para el evento", expanded=True):
+with st.expander("Selecciona tus opciones para el evento", expanded=True):
     fecha_evento = st.date_input("Selecciona la fecha del evento", datetime.date.today())
     fecha_reservada = pd.to_datetime("2025-01-25")  # Simulando una fecha reservada
     if fecha_evento == fecha_reservada:
@@ -178,7 +178,5 @@ with st.beta_expander("Selecciona tus opciones para el evento", expanded=True):
         mensaje_contacto = st.text_area("Mensaje (opcional)")
         if st.button("Enviar Información de Contacto", key="contact_button"):
             st.success("¡Tu información ha sido enviada exitosamente!")
-
-
 
 
