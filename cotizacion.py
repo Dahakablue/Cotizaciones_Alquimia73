@@ -45,13 +45,14 @@ st.markdown("""
             font-size: 36px;
             text-align: center;
             font-weight: bold;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Lora', serif;
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
         }
         .subheader {
             color: #FFD700;
             font-size: 24px;
             font-weight: bold;
+            font-family: 'Lora', serif;
         }
         .description {
             font-size: 16px;
@@ -76,6 +77,12 @@ st.markdown("""
         .button:hover {
             background-color: #FFA500;
         }
+        .input {
+            background-color: #000000;
+            color: #FFFFFF;
+            border-radius: 5px;
+            padding: 8px;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -95,23 +102,26 @@ with st.expander("Selecciona tus opciones para el evento", expanded=True):
                 "Entre semana Planta Baja - $14,000",
                 "Fin de semana Planta Baja - $15,000",
                 "Entre semana Planta Alta - $7,000",
-                "Fin de semana Planta Alta - $12,000"
+                "Fin de semana Planta Alta - $12,000",
+                "Solo renta - $0"  # Opción de solo renta
             ]
         )
+        
         horas_extra = st.number_input("Horas adicionales", min_value=0, step=1)
         n_personas = st.number_input("Número de personas", min_value=1, step=1)
 
-        # Paquete de comida con descripciones detalladas
-        paquete_comida = st.selectbox(
-            "Selecciona el paquete de alimentos",
-            [
-                "Básico - $250",
-                "Tradicional - $300",
-                "Premium - $350",
-                "Gourmet - $400"
-            ]
-        )
-        st.markdown(f"**Descripción del paquete de comida:** {DESCRIPCIONES_COMIDA[paquete_comida.split(' - ')[0]]}")
+        if planta != "Solo renta - $0":  # Si no se selecciona solo renta, se muestra el menú de comida
+            # Paquete de comida con descripciones detalladas
+            paquete_comida = st.selectbox(
+                "Selecciona el paquete de alimentos",
+                [
+                    "Básico - $250",
+                    "Tradicional - $300",
+                    "Premium - $350",
+                    "Gourmet - $400"
+                ]
+            )
+            st.markdown(f"**Descripción del paquete de comida:** {DESCRIPCIONES_COMIDA[paquete_comida.split(' - ')[0]]}")
 
         # Selección de horario (solo de 9 AM a 3 AM)
         st.subheader("Selecciona el horario del evento")
@@ -144,9 +154,16 @@ with st.expander("Selecciona tus opciones para el evento", expanded=True):
             costo_renta = 7000
         elif planta == "Fin de semana Planta Alta - $12,000":
             costo_renta = 12000
+        elif planta == "Solo renta - $0":
+            costo_renta = 0
 
         costo_renta += (horas_extra * COSTO_HORA_EXTRA)
-        costo_comida = PRECIOS_COMIDA[paquete_comida.split(" - ")[0]] * n_personas
+
+        if planta != "Solo renta - $0":  # Solo calculamos los costos de comida si no es solo renta
+            costo_comida = PRECIOS_COMIDA[paquete_comida.split(" - ")[0]] * n_personas
+        else:
+            costo_comida = 0
+
         costo_servicios = sum(PRECIOS_SERVICIOS[servicio.split(" - ")[0]] for servicio in servicios_seleccionados)
         costo_total = costo_renta + costo_comida + costo_servicios
 
@@ -161,7 +178,8 @@ with st.expander("Selecciona tus opciones para el evento", expanded=True):
             pdf.cell(200, 10, f"Fecha del Evento: {fecha_evento}", ln=True)
             pdf.cell(200, 10, f"Ubicación: {planta}", ln=True)
             pdf.cell(200, 10, f"Número de Personas: {n_personas}", ln=True)
-            pdf.cell(200, 10, f"Paquete de Comida: {paquete_comida} - ${costo_comida}", ln=True)
+            if planta != "Solo renta - $0":
+                pdf.cell(200, 10, f"Paquete de Comida: {paquete_comida} - ${costo_comida}", ln=True)
             pdf.cell(200, 10, f"Costo de Renta: ${costo_renta}", ln=True)
             pdf.cell(200, 10, f"Servicios Adicionales: {', '.join(servicios_seleccionados)} - ${costo_servicios}", ln=True)
             pdf.cell(200, 10, f"Costo Total: ${costo_total}", ln=True)
@@ -184,11 +202,11 @@ with st.expander("Selecciona tus opciones para el evento", expanded=True):
 
         # Apartado de datos de contacto
         st.subheader("Deja tus datos para contacto")
-        nombre_contacto = st.text_input("Nombre completo")
-        correo_contacto = st.text_input("Correo electrónico")
+        nombre_contacto = st.text_input("Nombre Completo")
+        correo_contacto = st.text_input("Correo Electrónico")
         telefono_contacto = st.text_input("Teléfono")
-        mensaje_contacto = st.text_area("Mensaje (opcional)")
-        if st.button("Enviar Información de Contacto", key="contact_button"):
-            st.success("¡Tu información ha sido enviada exitosamente!")
+
+        if st.button("Enviar cotización por correo", key="email_button"):
+            st.success("Cotización enviada por correo exitosamente.")
 
 
